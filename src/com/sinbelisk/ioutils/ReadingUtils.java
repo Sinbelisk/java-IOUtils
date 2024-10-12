@@ -34,9 +34,6 @@ public class ReadingUtils {
 
         return fileTextBuilder.toString();
     }
-    public byte[] getByteArrayFromFileLine(File file, int line){
-    }
-
     public int getFileLines(File file) throws IOException {
         int lines = 0;
 
