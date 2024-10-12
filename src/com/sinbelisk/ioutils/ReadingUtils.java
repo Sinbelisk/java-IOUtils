@@ -20,18 +20,20 @@ public class ReadingUtils {
         return fileTextBuilder.toString();
     }
 
+    // Los 2 métodos reciben un archivo y devuelven un String con el contenido del archivo.
+    // El segundo permite codificación.
     public String readAndGetFileText(File file) throws IOException {
         try (BufferedReader reader = CommonUtils.getBufferedReader((file))) {
             return readAndGetTextFromBuffer(reader);
         }
     }
-
     public String readAndGetFileText(File file, Charset encoding) throws IOException {
         try (BufferedReader reader = CommonUtils.getBufferedReaderStream(file, encoding)) {
             return readAndGetTextFromBuffer(reader);
         }
     }
 
+    //Devuelve un valor entero con la cantidad de lineas que tiene el archivo
     public int getFileLines(File file) throws IOException {
         int lines = 0;
         try (BufferedReader reader = CommonUtils.getBufferedReaderStream(file, null)) {
@@ -42,6 +44,7 @@ public class ReadingUtils {
         return lines;
     }
 
+    // Devuelve como String la linea de texto especificada de un archivo
     public String getFileLine(File file, int line) throws IOException {
         String fileTextLine = "";
 
@@ -55,6 +58,7 @@ public class ReadingUtils {
         return null;
     }
 
+    // Devuelve un valor entero con la cantidad de caracteres de una linea de texto de un archivo
     public int getFileLineCharCount(File file, int line) throws IOException {
         return getFileLine(file, line).length();
     }
