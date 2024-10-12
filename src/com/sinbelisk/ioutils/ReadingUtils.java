@@ -45,7 +45,7 @@ public class ReadingUtils {
     }
 
     // Devuelve como String la linea de texto especificada de un archivo
-    public String getFileLine(File file, int line) throws IOException {
+    public String searchAndGetFileLine(File file, int line) throws IOException {
         String fileTextLine = "";
 
         try (BufferedReader reader = CommonUtils.getBufferedReaderStream(file, null)) {
@@ -60,7 +60,7 @@ public class ReadingUtils {
 
     // Devuelve un valor entero con la cantidad de caracteres de una linea de texto de un archivo
     public int getFileLineCharCount(File file, int line) throws IOException {
-        return getFileLine(file, line).length();
+        return searchAndGetFileLine(file, line).length();
     }
 
     private StringBuilder getStringBuilder() {
