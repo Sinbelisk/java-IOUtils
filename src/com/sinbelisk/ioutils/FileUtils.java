@@ -3,31 +3,14 @@ package com.sinbelisk.ioutils;
 import java.io.*;
 
 public class FileUtils {
+    private static final int BUFFER_SIZE_MEDIUM = 8192; //Buffer size of 8KB
+    private static final int BUFFER_SIZE_SMALL = 1024; // Buffer size of 1KB
 
+    public static boolean areFilesEquals(File file1, File file2) throws IOException{
+        try(BufferedInputStream fis1 = getReadStream(file1);
+            BufferedInputStream fis2 = getReadStream(file2)){
 
-    public static void compararArchivosBinarios(String rutaArchivo1, String rutaArchivo2) throws IOException {
-        try (FileInputStream fis1 = new FileInputStream(rutaArchivo1);
-             FileInputStream fis2 = new FileInputStream(rutaArchivo2)) {
-            int byteArchivo1, byteArchivo2;
-            boolean sonIguales = true;
-
-            // Comparar ambos archivos byte a byte
-            while ((byteArchivo1 = fis1.read()) != -1 && (byteArchivo2 = fis2.read()) != -1) {
-                if (byteArchivo1 != byteArchivo2) {
-                    sonIguales = false;
-                    break;
-                }
-            }
-            // Verificar si ambos archivos tienen la misma longitud
-            if (fis1.read() != -1 || fis2.read() != -1) {
-                sonIguales = false;
-            }
-
-            if (sonIguales) {
-                System.out.println("Los archivos son idénticos.");
-            } else {
-                System.out.println("Los archivos son diferentes.");
-            }
+            return compareFiles(fis1, fis2, BUFFER_SIZE_MEDIUM);
         }
     }
 
@@ -60,7 +43,42 @@ public class FileUtils {
 
         }
     }
+    // Compares two streams in blocks with a specified buffer size.
+    private static boolean compareFiles(InputStream fileStream1, InputStream fileStream2, int bufferSize) throws IOException {
+        // Buffers for both files
+        byte[] bufferFile1 = new byte[bufferSize];
+        byte[] bufferFile2 = new byte[bufferSize];
 
+        // quantity of read bytes from each file
+        int bytesReadFile1;
+        int bytesReadFile2;
+
+        // Reads and compares files in blocks of bufferSize
+        while ((bytesReadFile1 = fileStream1.read(bufferFile1)) != -1) {
+            bytesReadFile2 = fileStream2.read(bufferFile2);
+
+            if (bytesReadFile1 != bytesReadFile2) return false;
+            if (!compareBuffers(bufferFile1, bufferFile2)) return false;
+        }
+
+        return fileStream2.read() == -1;
+    }
+
+    // returns a InputStream with a buffer.
+    private static BufferedInputStream getReadStream (File file) throws IOException{
+        return new BufferedInputStream(new FileInputStream(file));
+    }
+
+    // receives two blocks of bytes and compares them.
+    private static boolean compareBuffers(byte[] buffer1, byte[] buffer2) throws IOException{
+        for (int i = 0; i < buffer1.length; i++) {
+            if (buffer1[i] != buffer2[i]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }
 
 
