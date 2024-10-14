@@ -23,7 +23,7 @@ public class FileUtils {
             BufferedOutputStream copyFile = getWriteStream(copiedFile)){
 
             copy(originalFile, copyFile, bufferSize);
-            return CommonUtils.SUCESS;
+            return CommonUtils.SUCCESS;
 
         } catch (IOException e){
             System.err.println("Error when copying file: " + e.getMessage());
