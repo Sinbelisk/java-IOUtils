@@ -9,6 +9,8 @@ out/
 ### Files
 files/
 
+### Classes
+src/com/sinbelisk/ioutils/TEST.java
 
 ### Eclipse ###
 .apt_generated
