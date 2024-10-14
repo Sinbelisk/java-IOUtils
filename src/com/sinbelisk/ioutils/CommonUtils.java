@@ -17,4 +17,11 @@ public class CommonUtils {
         if (charset == null) charset = Charset.defaultCharset();
         return new BufferedReader(new InputStreamReader(new FileInputStream(file), charset));
     }
+    public static BufferedInputStream getReadStream(File file) throws IOException {
+        return new BufferedInputStream(new FileInputStream(file));
+    }
+
+    public static BufferedOutputStream getWriteStream(File file) throws  IOException{
+        return new BufferedOutputStream(new FileOutputStream(file));
+    }
 }

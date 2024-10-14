@@ -4,22 +4,21 @@ import java.io.*;
 
 public class FileUtils {
     private static final int BUFFER_SIZE_MEDIUM = 8192; //Buffeze of 8KB
-
     public boolean areFilesEquals(File file1, File file2) throws IOException {
-        try (BufferedInputStream fis1 = getReadStream(file1);
-             BufferedInputStream fis2 = getReadStream(file2)) {
+        try (BufferedInputStream fis1 = CommonUtils.getReadStream(file1);
+             BufferedInputStream fis2 = CommonUtils.getReadStream(file2)) {
 
             return compareFiles(fis1, fis2, BUFFER_SIZE_MEDIUM);
         }
     }
 
-    public int copyBinaryFile(File fileToCopy, String outputPath, int bufferSize) {
-        if (!fileToCopy.exists()) return CommonUtils.FILE_NOT_FOUND;
+    public int copyBinaryFile(File fileToCopy, String outputPath, int bufferSize) throws IOException {
+        if (!fileToCopy.exists()) throw new IOException("File " + fileToCopy.getName() + " doesn't exists");
 
-        File copiedFile = new File(outputPath + "/Copia" + fileToCopy.getName());
+        File copiedFile = new File(outputPath + "/Copy" + fileToCopy.getName());
 
-        try(BufferedInputStream originalFile = getReadStream(fileToCopy);
-            BufferedOutputStream copyFile = getWriteStream(copiedFile)){
+        try(BufferedInputStream originalFile = CommonUtils.getReadStream(fileToCopy);
+            BufferedOutputStream copyFile = CommonUtils.getWriteStream(copiedFile)){
 
             copy(originalFile, copyFile, bufferSize);
             return CommonUtils.SUCESS;
@@ -55,15 +54,6 @@ public class FileUtils {
         }
 
         return true;
-    }
-
-    // returns a InputStream with a buffer.
-    private BufferedInputStream getReadStream(File file) throws IOException {
-        return new BufferedInputStream(new FileInputStream(file));
-    }
-
-    private BufferedOutputStream getWriteStream(File file) throws  IOException{
-        return new BufferedOutputStream(new FileOutputStream(file));
     }
 
     // receives two blocks of bytes and compares them.
