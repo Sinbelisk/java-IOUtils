@@ -31,7 +31,7 @@ public class FileUtils {
         }
     }
     private void copy(InputStream inputStream, OutputStream outputStream, int bufferSize) throws IOException {
-            byte[] buffer = new byte[bufferSize];  // 1 KB de buffer
+            byte[] buffer = new byte[bufferSize];
             int readBytes;
 
             while ((readBytes = inputStream.read(buffer)) != -1) {

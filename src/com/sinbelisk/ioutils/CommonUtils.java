@@ -8,6 +8,9 @@ public class CommonUtils {
     public static final int SUCCESS = 0;
     public static final int FILE_NOT_FOUND = 1;
     public static final int INVALID_BUFFER = 2;
+    public static final int MEDIUM_SIZE_BUFFER = 8192;
+    public static final int SMALL_SIZE_BUFFER = 1024;
+
 
     public static BufferedReader getBufferedReader(File file) throws IOException{
         return new BufferedReader(new FileReader(file));
