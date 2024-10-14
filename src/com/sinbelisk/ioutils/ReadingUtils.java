@@ -6,10 +6,9 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 
 public class ReadingUtils {
-    private StringBuilder fileTextBuilder;
 
     private String readAndGetTextFromBuffer(BufferedReader reader) throws IOException {
-        fileTextBuilder = getStringBuilder();
+        StringBuilder fileTextBuilder = new StringBuilder();
         String bufferLine;
 
         while ((bufferLine = reader.readLine()) != null) {
@@ -62,9 +61,4 @@ public class ReadingUtils {
     public int getFileLineCharCount(File file, int line) throws IOException {
         return searchAndGetFileLine(file, line).length();
     }
-
-    private StringBuilder getStringBuilder() {
-        return new StringBuilder();
-    }
-
 }
