@@ -12,8 +12,8 @@ public class FileUtils {
         }
     }
 
-    public int copyBinaryFile(File fileToCopy, String outputPath, int bufferSize) throws IOException {
-        if (!fileToCopy.exists()) throw new IOException("File " + fileToCopy.getName() + " doesn't exists");
+    public int copyBinaryFile(File fileToCopy, String outputPath, int bufferSize) {
+        if (!fileToCopy.exists()) return CommonUtils.FILE_NOT_FOUND;
 
         File copiedFile = new File(outputPath + "/Copy" + fileToCopy.getName());
 
@@ -22,7 +22,9 @@ public class FileUtils {
 
             copy(originalFile, copyFile, bufferSize);
             return CommonUtils.SUCESS;
+
         } catch (IOException e){
+            System.err.println("Error when copying file: " + e.getMessage());
             return CommonUtils.ERROR;
         }
     }
