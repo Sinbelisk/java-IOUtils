@@ -3,7 +3,7 @@ package com.sinbelisk.ioutils;
 import java.io.*;
 
 public class FileUtils {
-    private static final int BUFFER_SIZE_MEDIUM = 8192; //Buffeze of 8KB
+    private static final int BUFFER_SIZE_MEDIUM = 8192; //Buffer of 8KB
     public boolean areFilesEquals(File file1, File file2) throws IOException {
         try (BufferedInputStream fis1 = CommonUtils.getReadStream(file1);
              BufferedInputStream fis2 = CommonUtils.getReadStream(file2)) {
@@ -59,7 +59,7 @@ public class FileUtils {
     }
 
     // receives two blocks of bytes and compares them.
-    private boolean areBuffersEquals(byte[] buffer1, byte[] buffer2) throws IOException {
+    private boolean areBuffersEquals(byte[] buffer1, byte[] buffer2) {
         for (int i = 0; i < buffer1.length; i++) {
             if (buffer1[i] != buffer2[i]) {
                 return false;
