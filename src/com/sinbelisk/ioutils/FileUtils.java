@@ -3,65 +3,77 @@ package com.sinbelisk.ioutils;
 import java.io.*;
 
 public class FileUtils {
+    private static final int BUFFER_SIZE_MEDIUM = 8192; //Buffeze of 8KB
 
+    public boolean areFilesEquals(File file1, File file2) throws IOException {
+        try (BufferedInputStream fis1 = getReadStream(file1);
+             BufferedInputStream fis2 = getReadStream(file2)) {
 
-    public static void compararArchivosBinarios(String rutaArchivo1, String rutaArchivo2) throws IOException {
-        try (FileInputStream fis1 = new FileInputStream(rutaArchivo1);
-             FileInputStream fis2 = new FileInputStream(rutaArchivo2)) {
-            int byteArchivo1, byteArchivo2;
-            boolean sonIguales = true;
-
-            // Comparar ambos archivos byte a byte
-            while ((byteArchivo1 = fis1.read()) != -1 && (byteArchivo2 = fis2.read()) != -1) {
-                if (byteArchivo1 != byteArchivo2) {
-                    sonIguales = false;
-                    break;
-                }
-            }
-            // Verificar si ambos archivos tienen la misma longitud
-            if (fis1.read() != -1 || fis2.read() != -1) {
-                sonIguales = false;
-            }
-
-            if (sonIguales) {
-                System.out.println("Los archivos son idénticos.");
-            } else {
-                System.out.println("Los archivos son diferentes.");
-            }
+            return compareFiles(fis1, fis2, BUFFER_SIZE_MEDIUM);
         }
     }
 
-    public static void copiarArchivoBinario(String rutaOriginal, String rutaCopia) throws IOException {
+    public int copyBinaryFile(File fileToCopy, String outputPath, int bufferSize) {
+        if (!fileToCopy.exists()) return CommonUtils.FILE_NOT_FOUND;
 
-        File archivoOriginal = new File(rutaOriginal);
-        File archivoCopia = new File(rutaCopia);
+        File copiedFile = new File(outputPath + "/Copia" + fileToCopy.getName());
 
-        long inicio = System.currentTimeMillis(); // Inicio del tiempo
+        try(BufferedInputStream originalFile = getReadStream(fileToCopy);
+            BufferedOutputStream copyFile = getWriteStream(copiedFile)){
 
-        try (FileInputStream fis = new FileInputStream(archivoOriginal);
-             FileOutputStream fos = new FileOutputStream(archivoCopia)) {
-
-            // Creamos un buffer para leer los datos en bloques
-            byte[] buffer = new byte[1024];  // 1 KB de buffer
-            int bytesLeidos;
-
-            // Leer y escribir el archivo en bloques
-            while ((bytesLeidos = fis.read(buffer)) != -1) {
-                // Imprime cada byte en formato binario (opcional, puede comentarse)
-                for (int i = 0; i < bytesLeidos; i++) {
-                    System.out.print(String.format("%8s", Integer.toBinaryString(buffer[i] & 0xFF)).replace(' ', '0') + " ");
-                }
-                fos.write(buffer, 0, bytesLeidos);
-            }
-
-            System.out.println("\nImagen copiada correctamente en formato binario: " + archivoCopia.getAbsolutePath());
-            long fin = System.currentTimeMillis(); // Fin del tiempo
-            System.out.println("Tiempo tomado con buffer: " + (fin - inicio) + " ms");
-
+            copy(originalFile, copyFile, bufferSize);
+            return CommonUtils.SUCESS;
+        } catch (IOException e){
+            return CommonUtils.ERROR;
         }
     }
+    private void copy(InputStream inputStream, OutputStream outputStream, int bufferSize) throws IOException {
+            byte[] buffer = new byte[bufferSize];  // 1 KB de buffer
+            int readBytes;
 
+            while ((readBytes = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, readBytes);
+            }
+    }
+
+    // Compares two streams in blocks with a specified buffer size.
+    private boolean compareFiles(InputStream fileStream1, InputStream fileStream2, int bufferSize) throws IOException {
+        // Buffers for both files
+        byte[] bufferFile1 = new byte[bufferSize];
+        byte[] bufferFile2 = new byte[bufferSize];
+
+        // quantity of read bytes from each file
+        int bytesReadFile1;
+        int bytesReadFile2;
+
+        // Reads and compares files in blocks of bufferSize
+        while ((bytesReadFile1 = fileStream1.read(bufferFile1)) != -1) {
+            bytesReadFile2 = fileStream2.read(bufferFile2);
+
+            if (bytesReadFile1 != bytesReadFile2) return false;
+            if (!areBuffersEquals(bufferFile1, bufferFile2)) return false;
+        }
+
+        return true;
+    }
+
+    // returns a InputStream with a buffer.
+    private BufferedInputStream getReadStream(File file) throws IOException {
+        return new BufferedInputStream(new FileInputStream(file));
+    }
+
+    private BufferedOutputStream getWriteStream(File file) throws  IOException{
+        return new BufferedOutputStream(new FileOutputStream(file));
+    }
+
+    // receives two blocks of bytes and compares them.
+    private boolean areBuffersEquals(byte[] buffer1, byte[] buffer2) throws IOException {
+        for (int i = 0; i < buffer1.length; i++) {
+            if (buffer1[i] != buffer2[i]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }
-
-
-
