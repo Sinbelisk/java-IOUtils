@@ -61,4 +61,19 @@ public class ReadingUtils {
     public int getFileLineCharCount(File file, int line) throws IOException {
         return searchAndGetFileLine(file, line).length();
     }
+
+    // Busca cualquier String dentro de un arhivo de cualquier codificacion. Devuelve la posicion del primer caracter de la cadena.
+    public int getStringPositionFromFile(File file, String inputLine, Charset charset) throws IOException {
+        StringBuilder fileTextBuilder = new StringBuilder();
+        String line;
+
+        try (BufferedReader bufferedReader = CommonUtils.getBufferedReaderStream(file, charset)) {
+            while ((line = bufferedReader.readLine()) != null) {
+                fileTextBuilder.append(line).append("\n");
+            }
+        }
+
+        String fileText = fileTextBuilder.toString();
+        return fileText.indexOf(inputLine);
+    }
 }
