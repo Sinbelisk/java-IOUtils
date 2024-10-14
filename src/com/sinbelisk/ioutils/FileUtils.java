@@ -3,8 +3,7 @@ package com.sinbelisk.ioutils;
 import java.io.*;
 
 public class FileUtils {
-    private static final int BUFFER_SIZE_MEDIUM = 8192; //Buffer size of 8KB
-    private static final int BUFFER_SIZE_SMALL = 1024; // Buffer size of 1KB
+    private static final int BUFFER_SIZE_MEDIUM = 8192; //Buffeze of 8KB
 
     public boolean areFilesEquals(File file1, File file2) throws IOException {
         try (BufferedInputStream fis1 = getReadStream(file1);
@@ -13,33 +12,25 @@ public class FileUtils {
             return compareFiles(fis1, fis2, BUFFER_SIZE_MEDIUM);
         }
     }
-    public void copiarArchivoBinario(String rutaOriginal, String rutaCopia) throws IOException {
-        File archivoOriginal = new File(rutaOriginal);
-        File archivoCopia = new File(rutaCopia);
 
-        long inicio = System.currentTimeMillis(); // Inicio del tiempo
+    public void copyBinaryFile(File fileToCopy, String outputPath, int bufferSize) throws IOException {
+        if (!fileToCopy.exists()) throw new IOException("File " + fileToCopy.getName() + " doesn't exists");
 
-        try (FileInputStream fis = new FileInputStream(archivoOriginal);
-             FileOutputStream fos = new FileOutputStream(archivoCopia)) {
+        File copiedFile = new File(outputPath + "/Copia" + fileToCopy.getName());
 
-            // Creamos un buffer para leer los datos en bloques
-            byte[] buffer = new byte[1024];  // 1 KB de buffer
-            int bytesLeidos;
+        try(BufferedInputStream originalFile = getReadStream(fileToCopy);
+            BufferedOutputStream copyFile = getWriteStream(copiedFile)){
 
-            // Leer y escribir el archivo en bloques
-            while ((bytesLeidos = fis.read(buffer)) != -1) {
-                // Imprime cada byte en formato binario (opcional, puede comentarse)
-                for (int i = 0; i < bytesLeidos; i++) {
-                    System.out.print(String.format("%8s", Integer.toBinaryString(buffer[i] & 0xFF)).replace(' ', '0') + " ");
-                }
-                fos.write(buffer, 0, bytesLeidos);
-            }
-
-            System.out.println("\nImagen copiada correctamente en formato binario: " + archivoCopia.getAbsolutePath());
-            long fin = System.currentTimeMillis(); // Fin del tiempo
-            System.out.println("Tiempo tomado con buffer: " + (fin - inicio) + " ms");
-
+            copy(originalFile, copyFile, bufferSize);
         }
+    }
+    private void copy(InputStream inputStream, OutputStream outputStream, int bufferSize) throws IOException {
+            byte[] buffer = new byte[bufferSize];  // 1 KB de buffer
+            int readBytes;
+
+            while ((readBytes = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, readBytes);
+            }
     }
 
     // Compares two streams in blocks with a specified buffer size.
@@ -66,6 +57,10 @@ public class FileUtils {
     // returns a InputStream with a buffer.
     private BufferedInputStream getReadStream(File file) throws IOException {
         return new BufferedInputStream(new FileInputStream(file));
+    }
+
+    private BufferedOutputStream getWriteStream(File file) throws  IOException{
+        return new BufferedOutputStream(new FileOutputStream(file));
     }
 
     // receives two blocks of bytes and compares them.
