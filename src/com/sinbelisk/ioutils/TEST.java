@@ -14,7 +14,7 @@ public class TEST {
 
         boolean areEquals = FileUtils.areFilesEquals(file, file2);
 
-        if(areEquals) System.out.println("Files are equals");
+        if(areEquals) System.out.println("Files are eqals");
         else System.out.println("Files aren't equals");
 
     }
