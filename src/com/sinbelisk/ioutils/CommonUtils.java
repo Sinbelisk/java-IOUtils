@@ -16,10 +16,20 @@ public class CommonUtils {
         return new BufferedReader(new FileReader(file));
     }
 
+    public static BufferedWriter getBufferedWriter(File file, boolean append) throws IOException {
+        return new BufferedWriter(new FileWriter(file, append));
+    }
+
     public static BufferedReader getBufferedReaderStream(File file, Charset charset) throws IOException {
         if (charset == null) charset = Charset.defaultCharset();
         return new BufferedReader(new InputStreamReader(new FileInputStream(file), charset));
     }
+
+    public static BufferedWriter getBufferedWriterStream(File file, boolean append ,Charset charset) throws IOException {
+        if (charset == null) charset = Charset.defaultCharset();
+        return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file, append), charset));
+    }
+
     public static BufferedInputStream getReadStream(File file) throws IOException {
         return new BufferedInputStream(new FileInputStream(file));
     }
