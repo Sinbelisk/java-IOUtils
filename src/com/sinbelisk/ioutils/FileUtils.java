@@ -5,12 +5,11 @@ import java.io.*;
 import static com.sinbelisk.ioutils.CommonUtils.*;
 
 public class FileUtils {
-    private static final int BUFFER_SIZE_MEDIUM = 8192; //Buffer of 8KB
     public boolean areFilesEquals(File file1, File file2) throws IOException {
         try (BufferedInputStream fis1 = getReadStream(file1);
              BufferedInputStream fis2 = getReadStream(file2)) {
 
-            return compareFiles(fis1, fis2, BUFFER_SIZE_MEDIUM);
+            return compareFiles(fis1, fis2, MEDIUM_SIZE_BUFFER);
         }
     }
 
