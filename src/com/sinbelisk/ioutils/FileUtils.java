@@ -13,8 +13,8 @@ public class FileUtils {
         }
     }
 
-    public void copyBinaryFile(File fileToCopy, String outputPath, int bufferSize) throws IOException {
-        if (!fileToCopy.exists()) throw new IOException("File " + fileToCopy.getName() + " doesn't exists");
+    public int copyBinaryFile(File fileToCopy, String outputPath, int bufferSize) {
+        if (!fileToCopy.exists()) return CommonUtils.FILE_NOT_FOUND;
 
         File copiedFile = new File(outputPath + "/Copia" + fileToCopy.getName());
 
@@ -22,6 +22,9 @@ public class FileUtils {
             BufferedOutputStream copyFile = getWriteStream(copiedFile)){
 
             copy(originalFile, copyFile, bufferSize);
+            return CommonUtils.SUCESS;
+        } catch (IOException e){
+            return CommonUtils.ERROR;
         }
     }
     private void copy(InputStream inputStream, OutputStream outputStream, int bufferSize) throws IOException {
